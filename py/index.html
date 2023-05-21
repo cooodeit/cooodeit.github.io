@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CodeIT Py</title>
+  <style>
+    body {
+      font-family: "Courier New", monospace;
+      background-color: #F5F5F5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    .editor {
+      width: 100%;
+      height: 200px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      background-color: #FFFFFF;
+      color: #000000;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .output {
+      width: 100%;
+      height: 200px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      background-color: #FFFFFF;
+      color: #000000;
+      font-size: 14px;
+      line-height: 18px;
+      overflow: auto;
+    }
+
+    .console {
+      width: 100%;
+      height: 200px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      background-color: #000000;
+      color: #FFFFFF;
+      font-size: 14px;
+      line-height: 18px;
+      overflow: auto;
+    }
+
+    button {
+      background-color: #007F00;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+
+    h2 {
+      margin: 20px 0 10px;
+      font-size: 16px;
+    }
+
+    /* Popup Window Styles */
+    .popup-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s, opacity 0.3s;
+    }
+
+    .popup {
+      width: 400px;
+      padding: 20px;
+      background-color: #FFFFFF;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .popup-title {
+      margin-top: 0;
+    }
+
+    .popup-input {
+      width: 100%;
+      padding: 3px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .popup-button {
+      background-color: #2a52ef;
+      color: #FFFFFF;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .popup-button2 {
+      background-color: #e02121;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .runbtn{
+      background-color: white;
+      color: black;
+      border: 2px solid #4CAF50; /* Green */
+      border-radius: 12px;
+    }
+    .stopbtn{
+      background-color: white;
+      color: black;
+      border: 2px solid #fd0a02; /* Green */
+      border-radius: 12px;
+    }
+    .savebtn{
+      background-color: rgb(240, 209, 35);
+      color: rgb(255, 255, 255);
+      border-radius: 12px;
+    }
+    input[type=file] {
+      background-color: white;
+      color: black;
+      border: 2px solid #36ff04; /* Green */
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <body onload="hidesbtn()"></body>
+  <h1><img src="https://img.freepik.com/free-icon/snakes_318-368381.jpg" width="35" height="35">  CodeIT Py</h1>
+
+  <div>
+    <textarea id="codeEditor" class="editor" spellcheck="false" placeholder="Start Coding or Load a .py file"></textarea>
+  </div>
+
+  <div>
+    <button onclick="runCode()" class="runbtn"><img src="https://static.thenounproject.com/png/1000022-200.png" width="15" height="15">Run</button>
+    <button onclick="stopCode()" class="stopbtn" id="stopBTN"><img src="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-pause-512.png" width="15" height="15">Stop</button>
+    <button onclick="showSavePopup()" class="savebtn">Save</button>
+    <button onclick="showloadPopup()" class="savebtn">Load</button>
+  </div>
+
+  <h2>Output:</h2>
+  <pre id="output" class="output"></pre>
+
+  <h2>Debug Console:</h2>
+  <pre id="console" class="console"></pre>
+
+  <!-- Popup Window -->
+  <!-- Popup Window -->
+<div id="savePopup" class="popup-container">
+  <div class="popup">
+    <h3 class="popup-title">Save File</h3>
+    <input id="fileNameInput" class="popup-input" type="text" size="" placeholder="Enter the Python file name">
+    <button onclick="saveCode()" class="popup-button">Save</button>  <button class="popup-button2" onclick="hideSavePopup()">Cancel</button>
+  </div>
+</div>
+
+<div id="loadPopup" class="popup-container">
+  <div class="popup">
+    <h3 class="popup-title">Load a .py File</h3>
+    <input type="file" id="file-selector" accept=".py" onchange="readFile(event)"><br/>
+    <br/>
+    <button class="popup-button2" onclick="hideloadPopup()">Cancel</button>
+  </div>
+</div>
+
+
+  <script src="http://skulpt.org/js/skulpt.min.js"></script>
+  <script src="http://skulpt.org/js/skulpt-stdlib.js"></script>
+  <script>
+    function hidesbtn(){
+      let btn = document.getElementById('stopBTN')
+      btn.style.display='none'
+    }
+
+    function runCode() {
+      var code = document.getElementById('codeEditor').value;
+      var outputElement = document.getElementById('output');
+      var consoleElement = document.getElementById('console');
+      var stopbtn1 = document.getElementById('stopBTN');
+
+      // Clear output and console
+      outputElement.textContent = '';
+      consoleElement.textContent = '';
+
+      stopbtn1.style.display='block'
+      Sk.configure({
+        output: function(text) {
+          outputElement.textContent += text;
+        },
+        read: function(file) {
+          if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][file] === undefined)
+            throw "File not found: '" + file + "'";
+          return Sk.builtinFiles["files"][file];
+        }
+      });
+
+      try {
+        Sk.misceval.asyncToPromise(function() {
+          return Sk.importMainWithBody("<stdin>", false, code, true);
+        }).then(function(mod) {
+          consoleElement.textContent = "Execution finished.";
+          stopbtn1.style.display= 'none'
+        }, function(err) {
+          consoleElement.textContent = err.toString();
+          stopbtn1.style.display= 'none'
+        });
+      } catch (error) {
+        consoleElement.textContent = error.toString();
+        stopbtn1.style.display= 'none'
+      }
+    }
+
+    function showSavePopup() {
+      var popupContainer = document.getElementById('savePopup');
+      var fileNameInput = document.getElementById('fileNameInput');
+
+      // Clear input field
+      fileNameInput.value = '';
+
+      // Show the popup
+      popupContainer.style.visibility = 'visible';
+      popupContainer.style.opacity = '1';
+
+      // Focus on the input field
+      fileNameInput.focus();
+    }
+    function showloadPopup() {
+      var popupContainer = document.getElementById('loadPopup');
+      var fileNameInput = document.getElementById('fileNameInput');
+
+      // Show the popup
+      popupContainer.style.visibility = 'visible';
+      popupContainer.style.opacity = '1';
+
+      fileNameInput.focus();
+    }
+
+    function hideSavePopup() {
+      var popupContainer = document.getElementById('savePopup');
+
+      // Hide the popup
+      popupContainer.style.visibility = 'hidden';
+      popupContainer.style.opacity = '0';
+    }
+    function hideloadPopup() {
+      var popupContainer = document.getElementById('loadPopup');
+
+      // Hide the popup
+      popupContainer.style.visibility = 'hidden';
+      popupContainer.style.opacity = '0';
+    }
+    
+
+    function saveCode() {
+      var code = document.getElementById('codeEditor').value;
+      var fileNameInput = document.getElementById('fileNameInput');
+      var fileName = fileNameInput.value.trim();
+
+      if (fileName) {
+        var link = document.createElement("a");
+        link.download = fileName + ".py";
+        link.href = "data:text/plain;charset=utf-8," + encodeURIComponent(code);
+        link.click();
+        hideSavePopup();
+      }
+    }
+    function stopCode() {
+      stopExecution = true;
+      let btn = document.getElementById('stopBTN')
+      var consoleElement = document.getElementById('console');
+      consoleElement.textContent = "Code execution stopped.";
+      btn.style.display='block'
+    }
+
+        function readFile(event) {
+          let txtarea = document.getElementById('codeEditor')
+          txtarea.value = '';
+          var file = event.target.files[0];
+          var reader = new FileReader();
+          
+          reader.onload = function(e) {
+              var content = e.target.result;
+              document.getElementById("codeEditor").value = content;
+          };
+          
+          reader.readAsText(file);
+          hideloadPopup()
+      }
+  </script>
+</body>
+</html>
