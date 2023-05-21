@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <html>
+  <meta content="Cooode IT! Python" property="og:title" />
+    <meta content="Maded By: Kókai Balázs" property="og:footer" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="Start Coding Anywhere" property="og:description" />
+    <meta content="https://cooodeit.github.io/py/" property="og:url" />
+    <meta content="https://img.freepik.com/free-icon/snakes_318-368381.jpg" property="og:image" />
+    <meta content="#3faa24" data-react-helmet="true" name="theme-color" />
 <head>
   <title>Cooode It Py</title>
   <style>
@@ -184,10 +191,13 @@
   <script src="skulpt.min.js"></script>
   <script src="skulpt-stdlib.js"></script>
   <script>
-    window.onbeforeunload = function() {
-            return "Are you sure you want to leave this page?";
-        };
+    window.addEventListener('beforeunload', function(e) {
+      var confirmationMessage = 'Are you sure you want to leave this page?';
   
+      (e || window.event).returnValue = confirmationMessage;
+      return confirmationMessage;
+  });
+
     function clearOutput(){
       let outputElement = document.getElementById('output');
       outputElement.textContent = '';
