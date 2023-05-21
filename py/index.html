@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CodeIT Py</title>
+  <title>Cooode It Py</title>
   <style>
     body {
       font-family: "Courier New", monospace;
@@ -128,6 +128,11 @@
       color: rgb(255, 255, 255);
       border-radius: 12px;
     }
+    .clearbtn{
+      background-color: rgb(38, 240, 35);
+      color: rgb(0, 0, 0);
+      border-radius: 12px;
+    }
     input[type=file] {
       background-color: white;
       color: black;
@@ -137,7 +142,7 @@
   </style>
 </head>
 <body>
-  <h1><img src="https://img.freepik.com/free-icon/snakes_318-368381.jpg" width="35" height="35">  CodeIT Py</h1>
+  <h1><img src="https://img.freepik.com/free-icon/snakes_318-368381.jpg" width="35" height="35">  Cooode It Py</h1>
 
   <div>
     <textarea id="codeEditor" class="editor" spellcheck="false" placeholder="Start Coding or Load a .py file"></textarea>
@@ -147,6 +152,7 @@
     <button onclick="runCode()" class="runbtn"><img src="https://static.thenounproject.com/png/1000022-200.png" width="15" height="15">Run</button>
     <button onclick="showSavePopup()" class="savebtn">Save</button>
     <button onclick="showloadPopup()" class="savebtn">Load</button>
+    <button onclick="clearOutput()" class="clearbtn">Clear Output</button>
   </div>
 
   <h2>Output:</h2>
@@ -178,15 +184,23 @@
   <script src="skulpt.min.js"></script>
   <script src="skulpt-stdlib.js"></script>
   <script>
+    window.addEventListener('beforeunload', function(e) {
+      var confirmationMessage = 'Are you sure you want to leave this page?';
+  
+      (e || window.event).returnValue = confirmationMessage;
+      return confirmationMessage;
+  });
+  
+    function clearOutput(){
+      let outputElement = document.getElementById('output');
+      outputElement.textContent = '';
+    }
 
     function runCode() {
       var code = document.getElementById('codeEditor').value;
       var outputElement = document.getElementById('output');
       var consoleElement = document.getElementById('console');
 
-      // Clear output and console
-      outputElement.textContent = '';
-      consoleElement.textContent = '';
 
       Sk.configure({
         output: function(text) {
