@@ -123,12 +123,6 @@
       border: 2px solid #4CAF50; /* Green */
       border-radius: 12px;
     }
-    .stopbtn{
-      background-color: white;
-      color: black;
-      border: 2px solid #fd0a02; /* Green */
-      border-radius: 12px;
-    }
     .savebtn{
       background-color: rgb(240, 209, 35);
       color: rgb(255, 255, 255);
@@ -143,7 +137,6 @@
   </style>
 </head>
 <body>
-  <body onload="hidesbtn()"></body>
   <h1><img src="https://img.freepik.com/free-icon/snakes_318-368381.jpg" width="35" height="35">  CodeIT Py</h1>
 
   <div>
@@ -152,7 +145,6 @@
 
   <div>
     <button onclick="runCode()" class="runbtn"><img src="https://static.thenounproject.com/png/1000022-200.png" width="15" height="15">Run</button>
-    <button onclick="stopCode()" class="stopbtn" id="stopBTN"><img src="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-pause-512.png" width="15" height="15">Stop</button>
     <button onclick="showSavePopup()" class="savebtn">Save</button>
     <button onclick="showloadPopup()" class="savebtn">Load</button>
   </div>
@@ -186,22 +178,16 @@
   <script src="http://skulpt.org/js/skulpt.min.js"></script>
   <script src="http://skulpt.org/js/skulpt-stdlib.js"></script>
   <script>
-    function hidesbtn(){
-      let btn = document.getElementById('stopBTN')
-      btn.style.display='none'
-    }
 
     function runCode() {
       var code = document.getElementById('codeEditor').value;
       var outputElement = document.getElementById('output');
       var consoleElement = document.getElementById('console');
-      var stopbtn1 = document.getElementById('stopBTN');
 
       // Clear output and console
       outputElement.textContent = '';
       consoleElement.textContent = '';
 
-      stopbtn1.style.display='block'
       Sk.configure({
         output: function(text) {
           outputElement.textContent += text;
@@ -218,14 +204,11 @@
           return Sk.importMainWithBody("<stdin>", false, code, true);
         }).then(function(mod) {
           consoleElement.textContent = "Execution finished.";
-          stopbtn1.style.display= 'none'
         }, function(err) {
           consoleElement.textContent = err.toString();
-          stopbtn1.style.display= 'none'
         });
       } catch (error) {
         consoleElement.textContent = error.toString();
-        stopbtn1.style.display= 'none'
       }
     }
 
@@ -282,13 +265,6 @@
         link.click();
         hideSavePopup();
       }
-    }
-    function stopCode() {
-      stopExecution = true;
-      let btn = document.getElementById('stopBTN')
-      var consoleElement = document.getElementById('console');
-      consoleElement.textContent = "Code execution stopped.";
-      btn.style.display='block'
     }
 
         function readFile(event) {
