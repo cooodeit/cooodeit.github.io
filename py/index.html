@@ -169,7 +169,6 @@ function runit() {
    var prog = document.getElementById("yourcode").value; 
    var mypre = document.getElementById("output"); 
    var consoleElement = document.getElementById('console');
-   mypre.innerHTML = ''; 
    Sk.pre = "output";
    Sk.configure({output:outf, read:builtinRead}); 
    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
