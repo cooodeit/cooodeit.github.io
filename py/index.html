@@ -1,16 +1,12 @@
-<!DOCTYPE html>
-<html>
-  <meta content="Cooode IT! Python" property="og:title" />
-    <meta content="Maded By: Kókai Balázs" property="og:footer" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta content="Start Coding Anywhere" property="og:description" />
-    <meta content="https://cooodeit.github.io/py/" property="og:url" />
-    <meta content="https://img.freepik.com/free-icon/snakes_318-368381.jpg" property="og:image" />
-    <meta content="#3faa24" data-react-helmet="true" name="theme-color" />
-<head>
-  <title>Cooode It Py</title>
-  <style>
-    body {
+<html> 
+<head> 
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script> 
+<script src="skulpt.min.js" type="text/javascript"></script> 
+<script src="skulpt-stdlib.js" type="text/javascript"></script> 
+
+</head>
+<style>
+  body {
       font-family: "Courier New", monospace;
       background-color: #F5F5F5;
       margin: 0;
@@ -147,92 +143,57 @@
       border-radius: 12px;
     }
   </style>
-</head>
-<body>
-  <h1><img src="https://img.freepik.com/free-icon/snakes_318-368381.jpg" width="35" height="35">  Cooode It Py</h1>
-
-  <div>
-    <textarea id="codeEditor" class="editor" spellcheck="false" placeholder="Start Coding or Load a .py file"></textarea>
-  </div>
-
-  <div>
-    <button onclick="runCode()" class="runbtn"><img src="https://static.thenounproject.com/png/1000022-200.png" width="15" height="15">Run</button>
-    <button onclick="showSavePopup()" class="savebtn">Save</button>
-    <button onclick="showloadPopup()" class="savebtn">Load</button>
-    <button onclick="clearOutput()" class="clearbtn">Clear Output</button>
-  </div>
-
-  <h2>Output:</h2>
-  <pre id="output" class="output"></pre>
-
-  <h2>Debug Console:</h2>
-  <pre id="console" class="console"></pre>
-
-  <!-- Popup Window -->
-  <!-- Popup Window -->
-<div id="savePopup" class="popup-container">
-  <div class="popup">
-    <h3 class="popup-title">Save File</h3>
-    <input id="fileNameInput" class="popup-input" type="text" size="" placeholder="Enter the Python file name">
-    <button onclick="saveCode()" class="popup-button">Save</button>  <button class="popup-button2" onclick="hideSavePopup()">Cancel</button>
-  </div>
-</div>
-
-<div id="loadPopup" class="popup-container">
-  <div class="popup">
-    <h3 class="popup-title">Load a .py File</h3>
-    <input type="file" id="file-selector" accept=".py" onchange="readFile(event)"><br/>
-    <br/>
-    <button class="popup-button2" onclick="hideloadPopup()">Cancel</button>
-  </div>
-</div>
 
 
-  <script src="skulpt.min.js"></script>
-  <script src="skulpt-stdlib.js"></script>
-  <script>
-    window.addEventListener('beforeunload', function(e) {
+<body> 
+
+<script type="text/javascript"> 
+// output functions are configurable.  This one just appends some text
+// to a pre element.
+function outf(text) { 
+    var mypre = document.getElementById("output"); 
+    mypre.innerHTML = mypre.innerHTML + text; 
+} 
+function builtinRead(x) {
+    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+            throw "File not found: '" + x + "'";
+    return Sk.builtinFiles["files"][x];
+}
+
+// Here's everything you need to run a python program in skulpt
+// grab the code from your textarea
+// get a reference to your pre element for output
+// configure the output function
+// call Sk.importMainWithBody()
+function runit() { 
+   var prog = document.getElementById("yourcode").value; 
+   var mypre = document.getElementById("output"); 
+   var consoleElement = document.getElementById('console');
+   mypre.innerHTML = ''; 
+   Sk.pre = "output";
+   Sk.configure({output:outf, read:builtinRead}); 
+   (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+   var myPromise = Sk.misceval.asyncToPromise(function() {
+       return Sk.importMainWithBody("<stdin>", false, prog, true);
+   });
+   myPromise.then(function(mod) {
+    consoleElement.textContent = "Execution finished.";
+   },
+       function(err) {
+        consoleElement.textContent = err.toString();
+   });
+} 
+window.addEventListener('beforeunload', function(e) {
       var confirmationMessage = 'Are you sure you want to leave this page?';
   
       (e || window.event).returnValue = confirmationMessage;
       return confirmationMessage;
   });
 
-    function clearOutput(){
+    function cle(){
       let outputElement = document.getElementById('output');
       outputElement.textContent = '';
     }
-
-    function runCode() {
-      var code = document.getElementById('codeEditor').value;
-      var outputElement = document.getElementById('output');
-      var consoleElement = document.getElementById('console');
-
-
-      Sk.configure({
-        output: function(text) {
-          outputElement.textContent += text;
-        },
-        read: function(file) {
-          if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][file] === undefined)
-            throw "File not found: '" + file + "'";
-          return Sk.builtinFiles["files"][file];
-        }
-      });
-
-      try {
-        Sk.misceval.asyncToPromise(function() {
-          return Sk.importMainWithBody("<stdin>", false, code, true);
-        }).then(function(mod) {
-          consoleElement.textContent = "Execution finished.";
-        }, function(err) {
-          consoleElement.textContent = err.toString();
-        });
-      } catch (error) {
-        consoleElement.textContent = error.toString();
-      }
-    }
-
     function showSavePopup() {
       var popupContainer = document.getElementById('savePopup');
       var fileNameInput = document.getElementById('fileNameInput');
@@ -257,7 +218,6 @@
 
       fileNameInput.focus();
     }
-
     function hideSavePopup() {
       var popupContainer = document.getElementById('savePopup');
 
@@ -275,7 +235,7 @@
     
 
     function saveCode() {
-      var code = document.getElementById('codeEditor').value;
+      var code = document.getElementById('yourcode').value;
       var fileNameInput = document.getElementById('fileNameInput');
       var fileName = fileNameInput.value.trim();
 
@@ -289,19 +249,59 @@
     }
 
         function readFile(event) {
-          let txtarea = document.getElementById('codeEditor')
+          let txtarea = document.getElementById('yourcode')
           txtarea.value = '';
           var file = event.target.files[0];
           var reader = new FileReader();
           
           reader.onload = function(e) {
               var content = e.target.result;
-              document.getElementById("codeEditor").value = content;
+              document.getElementById("yourcode").value = content;
           };
           
           reader.readAsText(file);
           hideloadPopup()
       }
-  </script>
-</body>
-</html>
+</script> 
+
+<h1><img src="./Cooode It Py1_files/snakes_318-368381.jpg" width="35" height="35">  Cooode It Py</h1>
+<form> 
+<textarea id="yourcode" style="height: 212px; width: 1872px;">import turtle
+
+t = turtle.Turtle()
+t.forward(100)
+
+print "Hello World" 
+</textarea><br/>
+<br/>
+<div id="savePopup" class="popup-container">
+  <div class="popup">
+    <h3 class="popup-title">Save File</h3>
+    <input id="fileNameInput" class="popup-input" type="text" size="" placeholder="Enter the Python file name">
+    <button type="button" onclick="saveCode()" class="popup-button">Save</button>  <button type="button" class="popup-button2" onclick="hideSavePopup()">Cancel</button>
+  </div>
+</div>
+
+<div id="loadPopup" class="popup-container">
+  <div class="popup">
+    <h3 class="popup-title">Load a .py File</h3>
+    <input type="file" id="file-selector" accept=".py" onchange="readFile(event)"><br>
+    <br>
+    <button type="button" class="popup-button2" onclick="hideloadPopup()">Cancel</button>
+  </div>
+</div>
+<button type="button" onclick="runit()" class="runbtn"><img src="./Cooode It Py1_files/1000022-200.png" width="15" height="15"> Run</button> 
+<button type="button" onclick="showSavePopup()" class="savebtn">Save</button>
+<button type="button" onclick="showloadPopup()" class="savebtn">Load</button> 
+<button type="button" onclick="cle()">Clear Output</button>
+</form> 
+<h2>Output:</h2>
+<pre id="output" class="output"></pre> 
+<h2>Turtule Canvas:<h2>
+<div id="mycanvas"></div>
+<h2>Debug Console:</h2>
+<pre id="console" class="console"></pre>
+
+</body> 
+
+</html> 
